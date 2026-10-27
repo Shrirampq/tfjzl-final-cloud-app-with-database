@@ -134,3 +134,62 @@ def extract_answers(request):
 
 
 
+
+def submit(request, course_id):
+    user = request.user
+    course = get_object_or_404(Course, pk=course_id)
+
+    enrollment = get_object_or_404(
+        Enrollment,
+        user=user,
+        course=course
+    )
+
+    submission = Submission.objects.create(enrollment=enrollment)
+
+    selected_ids = extract_answers(request)
+
+    for choice_id in selected_ids:
+        try:
+            choice = Choice.objects.get(id=choice_id)
+            submission.choices.add(choice)
+        except Choice.DoesNotExist:
+            pass
+
+    return redirect(
+        'onlinecourse:show_exam_result',
+        course_id=course.id,
+        submission_id=submission.id
+    )
+
+
+def show_exam_result(request, course_id, submission_id):
+    course = get_object_or_404(Course, pk=course_id)
+    submission = get_object_or_404(
+        Submission,
+        pk=submission_id
+    )
+
+    selected_choices = submission.choices.all()
+    selected_ids = list(
+        selected_choices.values_list('id', flat=True)
+    )
+
+    grade = 0
+
+    for question in course.question_set.all():
+        if question.is_get_score(selected_ids):
+            grade += question.grade
+
+    context = {
+        'course': course,
+        'submission': submission,
+        'selected_choices': selected_choices,
+        'grade': grade,
+    }
+
+    return render(
+        request,
+        'onlinecourse/exam_result_bootstrap.html',
+        context
+    )
