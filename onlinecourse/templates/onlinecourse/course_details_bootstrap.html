@@ -64,7 +64,7 @@
                             <div class="card-body">
                                 <h5>
                                     Question {{ forloop.counter }}:
-                                    {{ question.content }}
+                                    {{ question.question_text }}
                                     <span class="badge badge-secondary">
                                         {{ question.grade }} points
                                     </span>
@@ -79,7 +79,7 @@
                                         value="{{ choice.id }}"
                                         id="choice{{ choice.id }}">
                                     <label class="form-check-label" for="choice{{ choice.id }}">
-                                        {{ choice.content }}
+                                        {{ choice.choice_text }}
                                     </label>
                                 </div>
                                 {% endfor %}

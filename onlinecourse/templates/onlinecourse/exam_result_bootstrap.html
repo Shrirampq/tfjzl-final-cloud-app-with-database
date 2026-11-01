@@ -55,9 +55,9 @@
             {% for choice in selected_choices %}
             <div class="card mb-2">
                 <div class="card-body">
-                    <strong>{{ choice.question.content }}</strong>
+                    <strong>{{ choice.question.question_text }}</strong>
                     <p class="mb-0">
-                        Your answer: {{ choice.content }}
+                        Your answer: {{ choice.choice_text }}
                         {% if choice.is_correct %}
                         <span class="badge badge-success">Correct</span>
                         {% else %}
